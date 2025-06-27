@@ -1,0 +1,18 @@
+# === Build artifacts ===
+build/
+test  # compiled binary
+
+# === Compilation tooling ===
+compile_commands.json
+
+# === OS-specific / Editor-specific files ===
+.DS_Store
+*.swp
+*.swo
+*.swn
+*.bak
+
+# === IDE/editor directories (optional, depending on your tools) ===
+.vscode/
+.idea/
+
