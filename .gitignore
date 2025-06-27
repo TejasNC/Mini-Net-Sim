@@ -4,6 +4,7 @@ test  # compiled binary
 
 # === Compilation tooling ===
 compile_commands.json
+.CMakeLists.txt
 
 # === OS-specific / Editor-specific files ===
 .DS_Store
@@ -15,4 +16,5 @@ compile_commands.json
 # === IDE/editor directories (optional, depending on your tools) ===
 .vscode/
 .idea/
-
+.cache/
+.clangd
