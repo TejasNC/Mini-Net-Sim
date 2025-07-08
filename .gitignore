@@ -1,20 +1,148 @@
 # === Build artifacts ===
 build/
+bin/
+obj/
+Debug/
+Release/
+x64/
+x86/
+
+# === Compiled files ===
+*.o
+*.obj
+*.so
+*.dylib
+*.dll
+*.a
+*.lib
+
+# === Executables ===
+*.exe
+*.out
+*.app
+cpu-simulator
+NetworkSimulator
 test  # compiled binary
 
-# === Compilation tooling ===
+# === Debug files ===
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# === CMake ===
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+cmake_install.cmake
+Makefile
 compile_commands.json
+install_manifest.txt
+CTestTestfile.cmake
+_deps
 .CMakeLists.txt
 
-# === OS-specific / Editor-specific files ===
+# === Visual Studio / MSBuild ===
+*.vcxproj.user
+*.vcxproj.filters
+*.sln.docstates
+*.userprefs
+*.pidb
+*.suo
+*.user
+*.userosscache
+*.sln.docstates.json
+*.opensdf
+*.sdf
+*.cachefile
+*.VC.db
+*.VC.VC.opendb
+.vs/
+
+# === IDEs and editors ===
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+.idea/
+*.iws
+*.iml
+*.ipr
+.cache/
+.clangd
+
+# === OS-specific files ===
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# === Temporary files ===
+*.tmp
+*.temp
+*.log
 *.swp
 *.swo
 *.swn
+*~
 *.bak
+*.backup
+*.old
 
-# === IDE/editor directories (optional, depending on your tools) ===
-.vscode/
-.idea/
-.cache/
-.clangd
+# === Simulation output ===
+cpu-simulator-output*/
+
+# === Core dumps ===
+core
+core.*
+
+# === Profiling data ===
+*.gcno
+*.gcda
+*.gcov
+gmon.out
+
+# === Package manager files ===
+conan.lock
+vcpkg_installed/
+
+# === Test results ===
+test_results/
+Testing/
+
+# === Documentation generated files ===
+docs/html/
+docs/latex/
+*.pdf
+!README.pdf
+
+# === Archives ===
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# === Node.js (if any) ===
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# === Python (if any) ===
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+env/
+venv/
+.venv/
