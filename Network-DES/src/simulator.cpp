@@ -1,13 +1,15 @@
 #include "../include/simulator.hpp"
+#include "../include/packets/packet-time-tracker.hpp"
 #include <iostream>
 
 Simulator::Simulator() : eventQueue(), currentTime(0.0) {}
 
 void Simulator::schedule(std::unique_ptr<Event> event) {
+
     if (event) {
-        if (event->time < currentTime) {
-            std::cerr << "Warning: Scheduling event in the past (event time: "
-                      << event->time << ", current time: " << currentTime << ")" << std::endl;
+        if (event->tracker->getCurrentTime() < currentTime) {
+            std::cerr << "Warning: Scheduling event in the past     (event time: " << event->tracker->getCurrentTime()
+                      << ", current time: " << currentTime << ")" << std::endl;
         }
         eventQueue.push(std::move(event)); // Use move semantics to transfer ownership
     } else {
@@ -16,36 +18,22 @@ void Simulator::schedule(std::unique_ptr<Event> event) {
 }
 
 void Simulator::run() {
-    while (!eventQueue.empty()) {
-        // Safe way to extract from priority queue
-        std::unique_ptr<Event> current = std::move(const_cast<std::unique_ptr<Event>&>(eventQueue.top()));
-        eventQueue.pop();
 
-        currentTime = current->time;
+    while (!eventQueue.empty()) {
+
+        std::unique_ptr<Event> current = std::move(const_cast<std::unique_ptr<Event> &>(eventQueue.top()));
+        eventQueue.pop(); // is this safe now?
+
+        currentTime = current->tracker->getCurrentTime();
 
         std::cout << "[Time " << currentTime << "] Executing: " << current->getDescription() << "\n";
 
-        SimulatorContext ctx(this);
-        current->execute(ctx);
+        this->currentTime = current->tracker->getCurrentTime(); // Update simulator's current time
+
+        current->execute();
     }
+
+    std::cout << "Simulation complete. Final time: " << currentTime << std::endl;
 }
 
-SimulatorContext::SimulatorContext(Simulator *simulator) : sim(simulator) {}
-
-void SimulatorContext::schedule(std::unique_ptr<Event> event) const { sim->schedule(std::move(event)); }
-
-double SimulatorContext::getCurrentTime() const { return sim->getCurrentTime(); }
-
-double SimulatorContext::computeTransmissionDelay(int sizeBytes, double bandwidthMbps) const {
-    return (sizeBytes * 8.0) / (bandwidthMbps * 1e6);
-}
-
-double SimulatorContext::computePropagationDelay(double delayMs) const { return delayMs / 1000.0; }
-
-double SimulatorContext::computeTotalDelay(int sizeBytes, double bandwidthMbps, double delayMs) const {
-    return computeTransmissionDelay(sizeBytes, bandwidthMbps) + computePropagationDelay(delayMs);
-}
-
-double Simulator::getCurrentTime() const {
-    return currentTime;
-}
+double Simulator::getCurrentTime() const { return currentTime; }

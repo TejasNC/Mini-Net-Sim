@@ -12,12 +12,14 @@ include_directories(include)
 set(SOURCES
     src/simulator.cpp
     src/event.cpp
-    src/node.cpp
-    src/router.cpp
+    src/nodes/node.cpp
+    src/nodes/router.cpp
+    src/nodes/host.cpp
     src/interface.cpp
     src/link.cpp
     src/packets/packet.cpp
     src/packets/payload.cpp
+    src/packets/packet-time-tracker.cpp
 )
 
 # Create library

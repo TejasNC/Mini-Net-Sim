@@ -1,7 +1,7 @@
 #pragma once
 
-#include <string>
 #include <memory>
+#include <string>
 
 // Forward declarations to avoid circular dependencies
 class Interface;

@@ -1,20 +1,20 @@
 #include "../include/interface.hpp"
-#include "../include/link.hpp"
-#include "../include/node.hpp"
-#include "../include/packets/packet.hpp"
-#include "../include/simulator.hpp"
 #include "../include/event.hpp"
+#include "../include/link.hpp"
+#include "../include/nodes/node.hpp"
+#include "../include/packets/packet-time-tracker.hpp"
+#include "../include/packets/packet.hpp"
 #include <iostream>
 
 Interface::Interface(const std::string &id, std::shared_ptr<Node> node, std::shared_ptr<Link> link)
     : name(id), node(node), link(link) {
-    std::cout << "Interface " << name << " created for node " << node->getID()
-              << " and link " << link->getID() << std::endl;
+    std::cerr << "Interface " << name << " created for node " << node->getID() << " and link " << link->getID()
+              << std::endl;
 }
 
 Interface::~Interface() = default;
 
-std::string Interface::getID() const { return name;}
+std::string Interface::getID() const { return name; }
 
 bool Interface::isConnected() const {
     if (link.expired()) {
@@ -28,75 +28,65 @@ bool Interface::isConnected() const {
     return true;
 }
 
-void Interface::sendPacket(std::shared_ptr<Packet> packet) {
-    sendPacketWithContext(packet, nullptr);
-}
+void Interface::sendPacket(std::shared_ptr<Packet> packet, PacketTimeTracker *tracker) {
 
-void Interface::sendPacketWithContext(std::shared_ptr<Packet> packet, SimulatorContext* ctx) {
     if (!isConnected()) {
         std::cerr << "Cannot send packet from " << name << ": Interface is not connected." << std::endl;
         return;
     }
 
-    auto linkPtr = link.lock();
-    if (!linkPtr) {
-        std::cerr << "Cannot send packet: Link has been destroyed." << std::endl;
-        return;
-    }
+    auto linkPtr = link.lock(); // Safe to call since isConnected() already validated the link
 
     std::cout << "Interface " << name << " sending packet " << packet->srcNodeId << "->" << packet->dstNodeId
               << " through link " << linkPtr->getID() << std::endl;
 
     // Get the other interface on the link
-    auto otherInterface = linkPtr->getOtherInterface(shared_from_this());
-    if (!otherInterface) {
-        std::cerr << "No destination interface found on link " << linkPtr->getID() << std::endl;
-        return;
-    }
+    auto otherInterface = linkPtr->getOtherInterface(shared_from_this()); // debug this
 
-    if (ctx) {
+    if (tracker) {
         // Calculate transmission delay based on packet size and link bandwidth
-        double transmissionDelay = ctx->computeTransmissionDelay(packet->sizeBytes(), linkPtr->getBandwidth());
+        // simulates packet fragmentation and transmission (somewhat simplified) => add delay for each fragment in
+        // future versions
+        double transmissionDelay = tracker->computeTransmissionDelay(packet->sizeBytes(), linkPtr->getBandwidth());
 
         // Calculate propagation delay
-        double propagationDelay = ctx->computePropagationDelay(linkPtr->getDelay());
+        double propagationDelay = tracker->computePropagationDelay(linkPtr->getDelay());
 
         // Total delay
         double totalDelay = transmissionDelay + propagationDelay;
 
-        std::cout << "Scheduling packet transmission completion in " << totalDelay << " seconds" << std::endl;
+        std::cout << "Scheduling packet transmission completion in " << totalDelay << "ms" << std::endl;
+
+        // update packet's transmission time
+        tracker->currentTime += totalDelay;
 
         // Schedule a transmission complete event
-        auto transmissionEvent = createPacketTransmissionCompleteEvent(
-            ctx->getCurrentTime() + totalDelay,
-            otherInterface,
-            packet
-        );
+        auto transmissionEvent = createPacketTransmissionCompleteEvent(otherInterface, packet, tracker);
 
-        ctx->schedule(std::move(transmissionEvent));
+        tracker->schedule(std::move(transmissionEvent)); // transfer ownership of the event
+
     } else {
         // Fallback: immediate delivery (for backwards compatibility)
-        std::cout << "Warning: No simulator context provided, delivering packet immediately" << std::endl;
-        otherInterface->receivePacket(packet);
+        std::cout << "Warning: No packet time tracker provided. Delivering packet immediately."
+                  << std::endl; // for now, put this message in both streams
+        std::cerr << "Warning: No packet time tracker provided. Delivering packet immediately." << std::endl;
+        otherInterface->receivePacket(packet, nullptr);
     }
+
+    return;
 }
 
+void Interface::receivePacket(std::shared_ptr<Packet> packet, PacketTimeTracker *tracker) {
 
-void Interface::receivePacket(std::shared_ptr<Packet> packet) {
     if (!isConnected()) {
         std::cerr << "Cannot receive packet at " << name << ": Interface is not connected." << std::endl;
         return;
     }
 
     auto nodePtr = node.lock();
-    if (!nodePtr) {
-        std::cerr << "Cannot deliver packet: Node has been destroyed." << std::endl;
-        return;
-    }
 
     std::cout << "Interface " << name << " received packet " << packet->getID() << std::endl;
 
     // Deliver packet to the node
-    nodePtr->receive(packet, shared_from_this());
+    nodePtr->receive(packet, shared_from_this(), tracker);
 }
-

@@ -1,24 +1,29 @@
 #include "../include/event.hpp"
 #include "../include/interface.hpp"
-#include "../include/node.hpp"
+#include "../include/nodes/node.hpp"
+#include "../include/packets/packet-time-tracker.hpp"
 #include "../include/packets/packet.hpp"
-#include "../include/simulator.hpp"
 
 #include <memory>
 #include <string>
 
-// constructor
-Event::Event(double t) : time(t) {}
+Event::Event(PacketTimeTracker *tracker) : tracker(tracker) {}
 
-PacketArrivalEvent::PacketArrivalEvent(double t, std::shared_ptr<Node> node, std::shared_ptr<Packet> packet,
-                                       std::shared_ptr<Interface> iface)
-    : Event(t), node_(node), packet_(packet), interface_(iface) {}
+bool Event::operator<(const Event &other) const {
+    // For min-heap: return true if this event should be processed AFTER other
+    // Since we want earlier events to have higher priority, we return true if this event's time is greater
+    return tracker->getCurrentTime() > other.tracker->getCurrentTime();
+}
 
-void PacketArrivalEvent::execute(SimulatorContext &ctx) {
+PacketArrivalEvent::PacketArrivalEvent(std::shared_ptr<Node> node, std::shared_ptr<Packet> packet,
+                                       std::shared_ptr<Interface> iface, PacketTimeTracker *tracker)
+    : Event(tracker), node_(node), packet_(packet), interface_(iface) {}
+
+void PacketArrivalEvent::execute() {
     if (auto node = node_.lock()) {
         if (auto iface = interface_.lock()) {
-            // node->receive(packet_.get(), iface.get());
-            node->receive(packet_, iface); // Use shared_ptr to manage packet memory
+            // handle packet arrival at the node
+            node->receive(packet_, iface, tracker); // Use shared_ptr to manage packet memory
         }
     }
 }
@@ -26,22 +31,25 @@ void PacketArrivalEvent::execute(SimulatorContext &ctx) {
 std::string PacketArrivalEvent::getDescription() const {
     auto node = node_.lock();
     auto iface = interface_.lock();
-
-    return "PacketArrivalEvent at node " +
-           (node ? node->getID() : "INVALID") +
-           " on interface " +
-           (iface ? iface->name : "INVALID");
+    std::string desc = "PacketArrivalEvent at node " + (node ? node->getID() : "INVALID") + " on interface " +
+                       (iface ? iface->name : "INVALID");
+    if (auto pkt = packet_) {
+        desc += " | Packet: " + pkt->getID();
+    } else {
+        desc += " | Packet: INVALID";
+    }
+    return desc;
 }
 
-PacketDepartureEvent::PacketDepartureEvent(double t, std::shared_ptr<Node> node, std::shared_ptr<Packet> packet,
-                                           std::shared_ptr<Interface> iface)
-    : Event(t), node_(node), packet_(packet), interface_(iface) {}
+PacketDepartureEvent::PacketDepartureEvent(std::shared_ptr<Node> node, std::shared_ptr<Packet> packet,
+                                           std::shared_ptr<Interface> iface, PacketTimeTracker *tracker)
+    : Event(tracker), node_(node), packet_(packet), interface_(iface) {}
 
-void PacketDepartureEvent::execute(SimulatorContext &ctx) {
+void PacketDepartureEvent::execute() {
     if (auto node = node_.lock()) {
         if (auto iface = interface_.lock()) {
             // Use the delay-aware interface method
-            iface->sendPacketWithContext(packet_, &ctx);
+            iface->sendPacket(packet_, tracker);
         }
     }
 }
@@ -50,41 +58,51 @@ std::string PacketDepartureEvent::getDescription() const {
     auto node = node_.lock();
     auto iface = interface_.lock();
 
-    return "PacketDepartureEvent from node " +
-           (node ? node->getID() : "INVALID") +
-           " via interface " +
-           (iface ? iface->name : "INVALID");
+    std::string desc = "PacketDepartureEvent from node " + (node ? node->getID() : "INVALID") + " via interface " +
+                       (iface ? iface->name : "INVALID");
+    if (auto pkt = packet_) {
+        desc += " | Packet: " + pkt->getID();
+    } else {
+        desc += " | Packet: INVALID";
+    }
+    return desc;
 }
 
-PacketTransmissionCompleteEvent::PacketTransmissionCompleteEvent(double t, std::shared_ptr<Interface> iface,
-                                                                 std::shared_ptr<Packet> packet)
-    : Event(t), interface_(iface), packet_(packet) {}
+PacketTransmissionCompleteEvent::PacketTransmissionCompleteEvent(std::shared_ptr<Interface> iface,
+                                                                 std::shared_ptr<Packet> packet,
+                                                                 PacketTimeTracker *tracker)
+    : Event(tracker), interface_(iface), packet_(packet) {}
 
-void PacketTransmissionCompleteEvent::execute(SimulatorContext &ctx) {
+void PacketTransmissionCompleteEvent::execute() {
     if (auto iface = interface_.lock()) {
-        iface->receivePacket(packet_); // Deliver packet to the other end
+        iface->receivePacket(packet_, tracker); // Deliver packet to the other end
     }
 }
 
 std::string PacketTransmissionCompleteEvent::getDescription() const {
     auto iface = interface_.lock();
-
-    return "PacketTransmissionCompleteEvent on interface " +
-           (iface ? iface->name : "INVALID");
+    std::string desc = "PacketTransmissionCompleteEvent on interface " + (iface ? iface->name : "INVALID");
+    if (auto pkt = packet_) {
+        desc += " | Packet: " + pkt->getID();
+    } else {
+        desc += " | Packet: INVALID";
+    }
+    return desc;
 }
 
 // Factory functions for creating events
-std::unique_ptr<Event> createPacketArrivalEvent(double t, std::shared_ptr<Node> node,
-                                               std::shared_ptr<Packet> packet, std::shared_ptr<Interface> iface) {
-    return std::make_unique<PacketArrivalEvent>(t, node, packet, iface);
+std::unique_ptr<Event> createPacketArrivalEvent(std::shared_ptr<Node> node, std::shared_ptr<Packet> packet,
+                                                std::shared_ptr<Interface> iface, PacketTimeTracker *tracker) {
+    return std::make_unique<PacketArrivalEvent>(node, packet, iface, tracker);
 }
 
-std::unique_ptr<Event> createPacketDepartureEvent(double t, std::shared_ptr<Node> node,
-                                                 std::shared_ptr<Packet> packet, std::shared_ptr<Interface> iface) {
-    return std::make_unique<PacketDepartureEvent>(t, node, packet, iface);
+std::unique_ptr<Event> createPacketDepartureEvent(std::shared_ptr<Node> node, std::shared_ptr<Packet> packet,
+                                                  std::shared_ptr<Interface> iface, PacketTimeTracker *tracker) {
+    return std::make_unique<PacketDepartureEvent>(node, packet, iface, tracker);
 }
 
-std::unique_ptr<Event> createPacketTransmissionCompleteEvent(double t, std::shared_ptr<Interface> iface,
-                                                           std::shared_ptr<Packet> packet) {
-    return std::make_unique<PacketTransmissionCompleteEvent>(t, iface, packet);
+std::unique_ptr<Event> createPacketTransmissionCompleteEvent(std::shared_ptr<Interface> iface,
+                                                             std::shared_ptr<Packet> packet,
+                                                             PacketTimeTracker *tracker) {
+    return std::make_unique<PacketTransmissionCompleteEvent>(iface, packet, tracker);
 }

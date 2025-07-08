@@ -4,78 +4,78 @@
 #include <string>
 
 // Forward declarations
-class SimulatorContext;
+class PacketTimeTracker;
 class Node;
 class Packet;
 class Interface;
 
 class Event {
-public:
-    double time;
+  public:
+    PacketTimeTracker *tracker; // Pointer to the packet time tracker
 
-    Event(double t);
+    Event(PacketTimeTracker *timeTracker);
     virtual ~Event() = default;
 
-    virtual void execute(SimulatorContext& ctx) = 0;
+    virtual void execute() = 0;
     virtual std::string getDescription() const = 0;
 
     // Comparison operators for priority queue
-    bool operator<(const Event &other) const { return time > other.time; } // For min-heap
+    bool operator<(const Event &other) const; // For min-heap
 
     // Guard against copying
-    Event(const Event&) = delete;
-    Event& operator=(const Event&) = delete;
-
+    Event(const Event &) = delete;
+    Event &operator=(const Event &) = delete;
 };
 
 class PacketArrivalEvent : public Event {
-private:
+  private:
     std::weak_ptr<Node> node_;
     std::shared_ptr<Packet> packet_;
     std::weak_ptr<Interface> interface_;
 
-public:
-    PacketArrivalEvent(double t, std::shared_ptr<Node> node,
-                      std::shared_ptr<Packet> packet, std::shared_ptr<Interface> iface);
+  public:
+    PacketArrivalEvent(std::shared_ptr<Node> node, std::shared_ptr<Packet> packet, std::shared_ptr<Interface> iface,
+                       PacketTimeTracker *tracker);
 
-    void execute(SimulatorContext& ctx) override;
+    void execute() override;
     std::string getDescription() const override;
 };
 
 class PacketDepartureEvent : public Event {
-private:
+  private:
     std::weak_ptr<Node> node_;
     std::shared_ptr<Packet> packet_;
     std::weak_ptr<Interface> interface_;
 
-public:
-    PacketDepartureEvent(double t, std::shared_ptr<Node> node,
-                       std::shared_ptr<Packet> packet, std::shared_ptr<Interface> iface);
+  public:
+    PacketDepartureEvent(std::shared_ptr<Node> node, std::shared_ptr<Packet> packet, std::shared_ptr<Interface> iface,
+                         PacketTimeTracker *tracker);
 
-    void execute(SimulatorContext& ctx) override;
+    void execute() override;
     std::string getDescription() const override;
 };
 
+// TODO: change needed => review this (the construct does not feel right. there should be node instead of interface)
 class PacketTransmissionCompleteEvent : public Event {
-private:
+  private:
     std::weak_ptr<Interface> interface_;
     std::shared_ptr<Packet> packet_;
 
+  public:
+    PacketTransmissionCompleteEvent(std::shared_ptr<Interface> iface, std::shared_ptr<Packet> packet,
+                                    PacketTimeTracker *tracker);
 
-public:
-    PacketTransmissionCompleteEvent(double t, std::shared_ptr<Interface> iface,
-                                  std::shared_ptr<Packet> packet);
-
-    void execute(SimulatorContext& ctx) override;
+    void execute() override;
     std::string getDescription() const override;
 };
 
 // Factory functions for creating events
-std::unique_ptr<Event> createPacketArrivalEvent(double t, std::shared_ptr<Node> node,
-                                               std::shared_ptr<Packet> packet, std::shared_ptr<Interface> iface);
+std::unique_ptr<Event> createPacketArrivalEvent(std::shared_ptr<Node> node, std::shared_ptr<Packet> packet,
+                                                std::shared_ptr<Interface> iface, PacketTimeTracker *tracker);
 
-std::unique_ptr<Event> createPacketDepartureEvent(double t, std::shared_ptr<Node> node,
-                                                 std::shared_ptr<Packet> packet, std::shared_ptr<Interface> iface);
+std::unique_ptr<Event> createPacketDepartureEvent(std::shared_ptr<Node> node, std::shared_ptr<Packet> packet,
+                                                  std::shared_ptr<Interface> iface, PacketTimeTracker *tracker);
 
-std::unique_ptr<Event> createPacketTransmissionCompleteEvent(double t, std::shared_ptr<Interface> iface,
-                                                           std::shared_ptr<Packet> packet);
+std::unique_ptr<Event> createPacketTransmissionCompleteEvent(std::shared_ptr<Interface> iface,
+                                                             std::shared_ptr<Packet> packet,
+                                                             PacketTimeTracker *tracker);

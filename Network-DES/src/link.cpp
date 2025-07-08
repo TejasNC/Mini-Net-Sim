@@ -28,18 +28,10 @@ std::shared_ptr<Interface> Link::getOtherInterface(std::shared_ptr<Interface> in
     return nullptr;
 }
 
-bool Link::isFullyConnected() const {
-    return interface1 && interface2;
-}
+bool Link::isFullyConnected() const { return interface1 && interface2; }
 
-double Link::getBandwidth() const {
-    return bandwidthMbps;
-}
+double Link::getBandwidth() const { return bandwidthMbps; }
 
-double Link::getDelay() const {
-    return delayMs;
-}
+double Link::getDelay() const { return delayMs; }
 
-std::string Link::getID() const {
-    return name;
-}
+std::string Link::getID() const { return name; }
