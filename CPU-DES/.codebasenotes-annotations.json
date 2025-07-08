@@ -1,0 +1,14 @@
+{
+  "type": "dir",
+  "subNodes": {
+    "src": {
+      "type": "dir",
+      "subNodes": {
+        "main.cc": {
+          "type": "cc",
+          "annotation": "why is logfile made static?\n\nsingleton pattern and context object\n\nnote the beautiful use of extra cope on lines 44-50 for limiting the lifetime of temporary variables to just this block.\n\nalso note the std::stringstream syntax.\n\n"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,314 @@
+*** Simulator for CPU Job Scheduling ***
+*** cpu-simulator-output_2025-07-01-22-53-35 ***
+*** [simulator_rng seed=42] ***
+*** Invocation: ./bin/cpu-simulator 200 20000 -1 42 ***
+[        0.000ms]   0: Job Arrived
+[        0.000ms]   0: Job being scheduled now
+[        2.000ms]   0: Job completed
+[      318.460ms]   1: Job Arrived
+[      318.460ms]   1: Job being scheduled now
+[      323.460ms]   1: Job completed
+[      358.990ms]   2: Job Arrived
+[      358.990ms]   2: Job being scheduled now
+[      363.990ms]   2: Job completed
+[      661.535ms]   3: Job Arrived
+[      661.535ms]   3: Job being scheduled now
+[      666.535ms]   3: Job completed
+[      843.224ms]   4: Job Arrived
+[      843.224ms]   4: Job being scheduled now
+[      848.224ms]   4: Job completed
+[      961.282ms]   5: Job Arrived
+[      961.282ms]   5: Job being scheduled now
+[      966.282ms]   5: Job completed
+[      982.348ms]   6: Job Arrived
+[      982.348ms]   6: Job being scheduled now
+[      987.348ms]   6: Job completed
+[     1105.308ms]   7: Job Arrived
+[     1105.308ms]   7: Job being scheduled now
+[     1110.308ms]   7: Job completed
+[     1186.513ms]   8: Job Arrived
+[     1186.513ms]   8: Job being scheduled now
+[     1191.513ms]   8: Job completed
+[     1217.346ms]   9: Job Arrived
+[     1217.346ms]   9: Job being scheduled now
+[     1222.346ms]   9: Job completed
+[     1427.818ms]  10: Job Arrived
+[     1427.818ms]  10: Job being scheduled now
+[     1432.818ms]  10: Job completed
+[     1439.431ms]  11: Job Arrived
+[     1439.431ms]  11: Job being scheduled now
+[     1444.431ms]  11: Job completed
+[     1695.457ms]  12: Job Arrived
+[     1695.457ms]  12: Job being scheduled now
+[     1700.457ms]  12: Job completed
+[     2253.372ms]  13: Job Arrived
+[     2253.372ms]  13: Job being scheduled now
+[     2253.528ms]  14: Job Arrived
+[     2258.372ms]  13: Job completed
+[     2258.372ms]  14: Job being scheduled now
+[     2263.372ms]  14: Job completed
+[     3224.551ms]  15: Job Arrived
+[     3224.551ms]  15: Job being scheduled now
+[     3229.551ms]  15: Job completed
+[     3416.747ms]  16: Job Arrived
+[     3416.747ms]  16: Job being scheduled now
+[     3421.747ms]  16: Job completed
+[     3605.918ms]  17: Job Arrived
+[     3605.918ms]  17: Job being scheduled now
+[     3607.337ms]  18: Job Arrived
+[     3610.918ms]  17: Job completed
+[     3610.918ms]  18: Job being scheduled now
+[     3612.003ms]  19: Job Arrived
+[     3615.918ms]  18: Job completed
+[     3615.918ms]  19: Job being scheduled now
+[     3620.918ms]  19: Job completed
+[     3760.796ms]  20: Job Arrived
+[     3760.796ms]  20: Job being scheduled now
+[     3765.796ms]  20: Job completed
+[     3862.915ms]  21: Job Arrived
+[     3862.915ms]  21: Job being scheduled now
+[     3867.915ms]  21: Job completed
+[     3872.473ms]  22: Job Arrived
+[     3872.473ms]  22: Job being scheduled now
+[     3877.473ms]  22: Job completed
+[     4600.533ms]  23: Job Arrived
+[     4600.533ms]  23: Job being scheduled now
+[     4605.533ms]  23: Job completed
+[     4653.527ms]  24: Job Arrived
+[     4653.527ms]  24: Job being scheduled now
+[     4658.527ms]  24: Job completed
+[     4672.522ms]  25: Job Arrived
+[     4672.522ms]  25: Job being scheduled now
+[     4677.522ms]  25: Job completed
+[     4865.192ms]  26: Job Arrived
+[     4865.192ms]  26: Job being scheduled now
+[     4870.192ms]  26: Job completed
+[     4961.595ms]  27: Job Arrived
+[     4961.595ms]  27: Job being scheduled now
+[     4966.595ms]  27: Job completed
+[     5779.238ms]  28: Job Arrived
+[     5779.238ms]  28: Job being scheduled now
+[     5784.238ms]  28: Job completed
+[     5904.996ms]  29: Job Arrived
+[     5904.996ms]  29: Job being scheduled now
+[     5909.996ms]  29: Job completed
+[     6298.133ms]  30: Job Arrived
+[     6298.133ms]  30: Job being scheduled now
+[     6303.133ms]  30: Job completed
+[     6526.212ms]  31: Job Arrived
+[     6526.212ms]  31: Job being scheduled now
+[     6531.212ms]  31: Job completed
+[     6645.961ms]  32: Job Arrived
+[     6645.961ms]  32: Job being scheduled now
+[     6648.632ms]  33: Job Arrived
+[     6650.961ms]  32: Job completed
+[     6650.961ms]  33: Job being scheduled now
+[     6655.961ms]  33: Job completed
+[     7218.791ms]  34: Job Arrived
+[     7218.791ms]  34: Job being scheduled now
+[     7223.791ms]  34: Job completed
+[     7384.488ms]  35: Job Arrived
+[     7384.488ms]  35: Job being scheduled now
+[     7389.488ms]  35: Job completed
+[     7481.850ms]  36: Job Arrived
+[     7481.850ms]  36: Job being scheduled now
+[     7485.069ms]  37: Job Arrived
+[     7486.850ms]  36: Job completed
+[     7486.850ms]  37: Job being scheduled now
+[     7491.850ms]  37: Job completed
+[     7537.574ms]  38: Job Arrived
+[     7537.574ms]  38: Job being scheduled now
+[     7542.574ms]  38: Job completed
+[     7592.732ms]  39: Job Arrived
+[     7592.732ms]  39: Job being scheduled now
+[     7597.732ms]  39: Job completed
+[     7822.669ms]  40: Job Arrived
+[     7822.669ms]  40: Job being scheduled now
+[     7827.669ms]  40: Job completed
+[     8010.989ms]  41: Job Arrived
+[     8010.989ms]  41: Job being scheduled now
+[     8015.989ms]  41: Job completed
+[     8369.174ms]  42: Job Arrived
+[     8369.174ms]  42: Job being scheduled now
+[     8374.174ms]  42: Job completed
+[     8407.253ms]  43: Job Arrived
+[     8407.253ms]  43: Job being scheduled now
+[     8412.253ms]  43: Job completed
+[     8506.460ms]  44: Job Arrived
+[     8506.460ms]  44: Job being scheduled now
+[     8511.460ms]  44: Job completed
+[     8546.696ms]  45: Job Arrived
+[     8546.696ms]  45: Job being scheduled now
+[     8551.696ms]  45: Job completed
+[     8828.291ms]  46: Job Arrived
+[     8828.291ms]  46: Job being scheduled now
+[     8833.291ms]  46: Job completed
+[     8939.022ms]  47: Job Arrived
+[     8939.022ms]  47: Job being scheduled now
+[     8944.022ms]  47: Job completed
+[     8985.646ms]  48: Job Arrived
+[     8985.646ms]  48: Job being scheduled now
+[     8990.646ms]  48: Job completed
+[     9153.374ms]  49: Job Arrived
+[     9153.374ms]  49: Job being scheduled now
+[     9158.374ms]  49: Job completed
+[     9159.736ms]  50: Job Arrived
+[     9159.736ms]  50: Job being scheduled now
+[     9164.736ms]  50: Job completed
+[     9529.129ms]  51: Job Arrived
+[     9529.129ms]  51: Job being scheduled now
+[     9534.129ms]  51: Job completed
+[     9648.607ms]  52: Job Arrived
+[     9648.607ms]  52: Job being scheduled now
+[     9653.607ms]  52: Job completed
+[     9749.162ms]  53: Job Arrived
+[     9749.162ms]  53: Job being scheduled now
+[     9754.162ms]  53: Job completed
+[    10271.689ms]  54: Job Arrived
+[    10271.689ms]  54: Job being scheduled now
+[    10276.689ms]  54: Job completed
+[    10531.545ms]  55: Job Arrived
+[    10531.545ms]  55: Job being scheduled now
+[    10536.545ms]  55: Job completed
+[    10610.611ms]  56: Job Arrived
+[    10610.611ms]  56: Job being scheduled now
+[    10615.611ms]  56: Job completed
+[    10779.611ms]  57: Job Arrived
+[    10779.611ms]  57: Job being scheduled now
+[    10784.611ms]  57: Job completed
+[    10926.753ms]  58: Job Arrived
+[    10926.753ms]  58: Job being scheduled now
+[    10931.753ms]  58: Job completed
+[    11576.476ms]  59: Job Arrived
+[    11576.476ms]  59: Job being scheduled now
+[    11581.476ms]  59: Job completed
+[    11948.741ms]  60: Job Arrived
+[    11948.741ms]  60: Job being scheduled now
+[    11953.741ms]  60: Job completed
+[    12223.868ms]  61: Job Arrived
+[    12223.868ms]  61: Job being scheduled now
+[    12228.868ms]  61: Job completed
+[    12379.040ms]  62: Job Arrived
+[    12379.040ms]  62: Job being scheduled now
+[    12384.040ms]  62: Job completed
+[    12555.781ms]  63: Job Arrived
+[    12555.781ms]  63: Job being scheduled now
+[    12560.781ms]  63: Job completed
+[    13227.726ms]  64: Job Arrived
+[    13227.726ms]  64: Job being scheduled now
+[    13232.726ms]  64: Job completed
+[    13414.533ms]  65: Job Arrived
+[    13414.533ms]  65: Job being scheduled now
+[    13419.533ms]  65: Job completed
+[    13479.126ms]  66: Job Arrived
+[    13479.126ms]  66: Job being scheduled now
+[    13484.126ms]  66: Job completed
+[    13549.399ms]  67: Job Arrived
+[    13549.399ms]  67: Job being scheduled now
+[    13554.399ms]  67: Job completed
+[    13585.527ms]  68: Job Arrived
+[    13585.527ms]  68: Job being scheduled now
+[    13588.679ms]  69: Job Arrived
+[    13590.527ms]  68: Job completed
+[    13590.527ms]  69: Job being scheduled now
+[    13595.527ms]  69: Job completed
+[    13698.801ms]  70: Job Arrived
+[    13698.801ms]  70: Job being scheduled now
+[    13703.801ms]  70: Job completed
+[    13799.267ms]  71: Job Arrived
+[    13799.267ms]  71: Job being scheduled now
+[    13804.267ms]  71: Job completed
+[    13868.750ms]  72: Job Arrived
+[    13868.750ms]  72: Job being scheduled now
+[    13871.586ms]  73: Job Arrived
+[    13873.750ms]  72: Job completed
+[    13873.750ms]  73: Job being scheduled now
+[    13878.750ms]  73: Job completed
+[    13915.926ms]  74: Job Arrived
+[    13915.926ms]  74: Job being scheduled now
+[    13920.926ms]  74: Job completed
+[    14164.428ms]  75: Job Arrived
+[    14164.428ms]  75: Job being scheduled now
+[    14169.428ms]  75: Job completed
+[    14476.725ms]  76: Job Arrived
+[    14476.725ms]  76: Job being scheduled now
+[    14481.725ms]  76: Job completed
+[    14662.986ms]  77: Job Arrived
+[    14662.986ms]  77: Job being scheduled now
+[    14667.986ms]  77: Job completed
+[    15184.539ms]  78: Job Arrived
+[    15184.539ms]  78: Job being scheduled now
+[    15189.539ms]  78: Job completed
+[    15395.119ms]  79: Job Arrived
+[    15395.119ms]  79: Job being scheduled now
+[    15400.119ms]  79: Job completed
+[    15888.045ms]  80: Job Arrived
+[    15888.045ms]  80: Job being scheduled now
+[    15893.045ms]  80: Job completed
+[    16267.521ms]  81: Job Arrived
+[    16267.521ms]  81: Job being scheduled now
+[    16272.521ms]  81: Job completed
+[    16386.889ms]  82: Job Arrived
+[    16386.889ms]  82: Job being scheduled now
+[    16391.889ms]  82: Job completed
+[    16406.943ms]  83: Job Arrived
+[    16406.943ms]  83: Job being scheduled now
+[    16411.943ms]  83: Job completed
+[    16499.610ms]  84: Job Arrived
+[    16499.610ms]  84: Job being scheduled now
+[    16504.610ms]  84: Job completed
+[    16720.642ms]  85: Job Arrived
+[    16720.642ms]  85: Job being scheduled now
+[    16725.642ms]  85: Job completed
+[    16939.918ms]  86: Job Arrived
+[    16939.918ms]  86: Job being scheduled now
+[    16944.918ms]  86: Job completed
+[    17118.872ms]  87: Job Arrived
+[    17118.872ms]  87: Job being scheduled now
+[    17123.872ms]  87: Job completed
+[    17183.112ms]  88: Job Arrived
+[    17183.112ms]  88: Job being scheduled now
+[    17188.112ms]  88: Job completed
+[    17347.874ms]  89: Job Arrived
+[    17347.874ms]  89: Job being scheduled now
+[    17352.874ms]  89: Job completed
+[    17444.428ms]  90: Job Arrived
+[    17444.428ms]  90: Job being scheduled now
+[    17449.428ms]  90: Job completed
+[    18157.492ms]  91: Job Arrived
+[    18157.492ms]  91: Job being scheduled now
+[    18162.492ms]  91: Job completed
+[    18535.473ms]  92: Job Arrived
+[    18535.473ms]  92: Job being scheduled now
+[    18540.473ms]  92: Job completed
+[    18791.305ms]  93: Job Arrived
+[    18791.305ms]  93: Job being scheduled now
+[    18796.305ms]  93: Job completed
+[    18845.139ms]  94: Job Arrived
+[    18845.139ms]  94: Job being scheduled now
+[    18850.139ms]  94: Job completed
+[    18904.300ms]  95: Job Arrived
+[    18904.300ms]  95: Job being scheduled now
+[    18909.300ms]  95: Job completed
+[    18912.555ms]  96: Job Arrived
+[    18912.555ms]  96: Job being scheduled now
+[    18917.555ms]  96: Job completed
+[    19160.587ms]  97: Job Arrived
+[    19160.587ms]  97: Job being scheduled now
+[    19165.587ms]  97: Job completed
+[    19184.094ms]  98: Job Arrived
+[    19184.094ms]  98: Job being scheduled now
+[    19189.094ms]  98: Job completed
+[    19299.821ms]  99: Job Arrived
+[    19299.821ms]  99: Job being scheduled now
+[    19304.821ms]  99: Job completed
+[    19344.880ms] 100: Job Arrived
+[    19344.880ms] 100: Job being scheduled now
+[    19349.880ms] 100: Job completed
+[    19797.099ms] 101: Job Arrived
+[    19797.099ms] 101: Job being scheduled now
+[    19802.099ms] 101: Job completed
+[    19926.111ms] 102: Job Arrived
+[    19926.111ms] 102: Job being scheduled now
+[    19931.111ms] 102: Job completed
+*** Simulation complete ***
