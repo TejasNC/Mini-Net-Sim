@@ -10,7 +10,7 @@ Node::~Node() = default;
 
 void Node::addInterface(const std::shared_ptr<Interface> &interface) {
     interfaces.push_back(interface);
-    std::cerr << "Interface " << interface->name << " added to node " << id << std::endl;
+    // std::cerr << "Interface " << interface->name << " added to node " << id << std::endl;
 }
 
 void Node::removeInterface(const std::shared_ptr<Interface> &interface) {

@@ -11,6 +11,8 @@ To Fix:
 Simulator Context Ownership:
 
 1) Node, Link and Interface do not won Simulator Context => For them, it should be weak_ptr
+
 2) Should packet own context?
+
 3) Eveents partially own SImulator Context, just like the own packet. Therefore for events, it should be
     a shared_ptr

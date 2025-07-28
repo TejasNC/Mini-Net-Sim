@@ -1,7 +1,7 @@
 #include "../../include/packets/packet-time-tracker.hpp"
 #include "../../include/simulator.hpp"
 
-PacketTimeTracker::PacketTimeTracker(Simulator *simulator) : sim(simulator) {
+PacketTimeTracker::PacketTimeTracker(Simulator* simulator) : sim(simulator) {
     this->currentTime = simulator->getCurrentTime();
 }
 

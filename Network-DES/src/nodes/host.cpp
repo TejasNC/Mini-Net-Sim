@@ -1,9 +1,9 @@
 #include "../../include/nodes/host.hpp"
 #include "../../include/interface.hpp"
+#include "../../include/logger.hpp"
 #include "../../include/packets/packet-time-tracker.hpp"
 #include "../../include/packets/packet.hpp"
 #include "../../include/packets/payload.hpp"
-#include <iostream>
 
 Host::Host(const std::string &id) : Node(id) {}
 
@@ -11,29 +11,35 @@ void Host::receive(std::shared_ptr<Packet> packet, const std::shared_ptr<Interfa
                    PacketTimeTracker *tracker) {
 
     if (!packet) {
-        std::cerr << "Received null packet at host " << getID() << ". Sort out ownership issues!" << std::endl;
+        NetSim::Logger::log(NetSim::Logger::Level::ERROR, 0.0, NetSim::Logger::HOST, getID(),
+                            "Received null packet - memory ownership issue detected!");
         return;
     }
 
     double currTime = tracker->getCurrentTime();
-    std::cout << "[" << currTime << "] Host " << getID() << " received packet from " << packet->srcNodeId << " via "
-              << fromInterface->name << std::endl;
+    NetSim::Logger::log(NetSim::Logger::Level::DEBUG, currTime, NetSim::Logger::HOST, getID(),
+                        "Packet received from [" + packet->srcNodeId + "] via interface [" + fromInterface->name + "]");
+
 
     // Check if packet is for this host
     if (packet->dstNodeId == getID()) {
-        std::cout << "[" << currTime << "] Packet successfully delivered to host " << getID() << std::endl;
+        NetSim::Logger::log(NetSim::Logger::Level::INFO, currTime, NetSim::Logger::HOST, getID(),
+                            "Packet successfully delivered! Processing payload...");
 
-        // Process the packet (in a real implementation, this would extract and process the payload)
+        // Process the packet payload
         if (packet->payload) {
-            std::cout << "[" << currTime << "] Host " << getID()
-                      << " processing packet payload (size: " << packet->sizeBytes() << " bytes)" << std::endl;
+            NetSim::Logger::log(NetSim::Logger::Level::DEBUG, currTime, NetSim::Logger::PACKET, packet->getID(),
+                                "Processing payload (size: " + std::to_string(packet->sizeBytes()) + " bytes)");
         }
 
-        std::cout << "[" << currTime << "] Packet consumption complete at host " << getID() << std::endl;
+        NetSim::Logger::log(NetSim::Logger::Level::DEBUG, currTime, NetSim::Logger::HOST, getID(),
+                            "Packet processing completed successfully");
     } else {
-        std::cerr << "Host " << getID() << " received packet not destined for it (dst: " << packet->dstNodeId << ")"
-                  << std::endl;
+        NetSim::Logger::log(NetSim::Logger::Level::ERROR, currTime, NetSim::Logger::HOST, getID(),
+                            "Packet routing error: received packet destined for [" + packet->dstNodeId +
+                                "] instead of [" + getID() + "]");
     }
+
 }
 
 void Host::send(std::shared_ptr<Packet> packet, const std::string dstId, PacketTimeTracker *tracker) {
@@ -41,26 +47,31 @@ void Host::send(std::shared_ptr<Packet> packet, const std::string dstId, PacketT
 
     // Hosts typically have only one interface, so use the first available one
     if (interfaces.empty()) {
-        std::cerr << "Host " << getID() << " has no interfaces to send packet" << std::endl;
+        NetSim::Logger::log(NetSim::Logger::Level::ERROR, currTime, NetSim::Logger::HOST, getID(),
+                            "Cannot send packet: no network interfaces available");
         return;
     }
 
     auto interface = interfaces[0]; // Use first interface
 
-    std::cout << "[" << currTime << "] Host " << getID() << " sending packet to " << dstId << " via interface "
-              << interface->name << std::endl;
+    NetSim::Logger::log(NetSim::Logger::Level::INFO, currTime, NetSim::Logger::HOST, getID(),
+                        "Sending packet to [" + dstId + "] via interface [" + interface->name + "]");
+
 
     // Send packet through the interface
     interface->sendPacket(packet, tracker);
 
-    std::cout << "[" << currTime << "] Packet sent from host " << getID() << " to " << dstId << " via interface "
-              << interface->name << std::endl;
+    NetSim::Logger::log(NetSim::Logger::Level::DEBUG, currTime, NetSim::Logger::HOST, getID(),
+                        "Packet successfully transmitted to interface [" + interface->name + "]");
+
 }
 
 void Host::generatePacket(const std::string &dstId, const std::string &message, PacketTimeTracker *tracker) {
     double currTime = tracker->getCurrentTime();
 
-    std::cout << "[" << currTime << "] Host " << getID() << " generating packet for " << dstId << std::endl;
+    NetSim::Logger::log(NetSim::Logger::Level::INFO, currTime, NetSim::Logger::HOST, getID(),
+                        "Generating new packet for destination [" + dstId + "]");
+
 
     // Create packet
     auto packet = std::make_shared<Packet>(getID(), dstId);
@@ -69,9 +80,11 @@ void Host::generatePacket(const std::string &dstId, const std::string &message, 
     auto payload = std::make_unique<DataPayload>(message);
     packet->setPayload(std::move(payload));
 
-    std::cout << "[" << currTime << "] Host " << getID() << " created packet " << packet->getID()
-              << " (size: " << packet->sizeBytes() << " bytes)" << std::endl;
+    NetSim::Logger::log(NetSim::Logger::Level::DEBUG, currTime, NetSim::Logger::PACKET, packet->getID(),
+                        "Created packet (size: " + std::to_string(packet->sizeBytes()) + " bytes, payload: \"" +
+                            message + "\")");
 
     // Send the packet
     send(packet, dstId, tracker);
+
 }

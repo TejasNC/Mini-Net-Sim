@@ -1,6 +1,6 @@
 #include "../include/simulator.hpp"
+#include "../include/logger.hpp"
 #include "../include/packets/packet-time-tracker.hpp"
-#include <iostream>
 
 Simulator::Simulator() : eventQueue(), currentTime(0.0) {}
 
@@ -8,16 +8,22 @@ void Simulator::schedule(std::unique_ptr<Event> event) {
 
     if (event) {
         if (event->tracker->getCurrentTime() < currentTime) {
-            std::cerr << "Warning: Scheduling event in the past     (event time: " << event->tracker->getCurrentTime()
-                      << ", current time: " << currentTime << ")" << std::endl;
+            NetSim::Logger::log(NetSim::Logger::Level::WARNING, currentTime, NetSim::Logger::SIMULATOR, "SIM",
+                "Scheduling event in the past (event: " + std::to_string(event->tracker->getCurrentTime()) +
+                "s, current: " + std::to_string(currentTime) + "s)");
         }
         eventQueue.push(std::move(event)); // Use move semantics to transfer ownership
     } else {
-        std::cerr << "Error: Attempted to schedule a null event." << std::endl;
+        NetSim::Logger::log(NetSim::Logger::Level::ERROR, currentTime, NetSim::Logger::SIMULATOR, "SIM",
+            "Attempted to schedule null event");
     }
 }
 
 void Simulator::run() {
+
+    NetSim::Logger::log(NetSim::Logger::Level::INFO, currentTime, NetSim::Logger::SIMULATOR, "SIM",
+        "Starting discrete event simulation...");
+
 
     while (!eventQueue.empty()) {
 
@@ -26,14 +32,15 @@ void Simulator::run() {
 
         currentTime = current->tracker->getCurrentTime();
 
-        std::cout << "[Time " << currentTime << "] Executing: " << current->getDescription() << "\n";
+        NetSim::Logger::log(NetSim::Logger::Level::DEBUG, currentTime, NetSim::Logger::GENERAL, "EVT",
+            "Executing: " + current->getDescription());
 
         this->currentTime = current->tracker->getCurrentTime(); // Update simulator's current time
-
         current->execute();
     }
 
-    std::cout << "Simulation complete. Final time: " << currentTime << std::endl;
+    NetSim::Logger::log(NetSim::Logger::Level::INFO, currentTime, NetSim::Logger::SIMULATOR, "SIM",
+        "Simulation completed successfully! Final time: " + std::to_string(currentTime) + "s");
 }
 
 double Simulator::getCurrentTime() const { return currentTime; }

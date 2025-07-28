@@ -17,7 +17,7 @@ class Simulator {
     };
 
     std::priority_queue<std::unique_ptr<Event>, std::vector<std::unique_ptr<Event>>, EventComparator> eventQueue;
-    double currentTime;
+    double currentTime; // TODO: check if this is needed
 
   public:
     Simulator();
@@ -25,5 +25,5 @@ class Simulator {
     void schedule(std::unique_ptr<Event> event);
     void run();
 
-    double getCurrentTime() const;
+    double getCurrentTime() const; // TODO: check if this is needed
 };

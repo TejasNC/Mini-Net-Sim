@@ -8,11 +8,10 @@ Packet::Packet(const std::string& src, const std::string& dst)
     }
 
 Packet::~Packet() {
-    // Eat 5 Star => Unique pointer will automatically clean up the payload
+    // Unique pointer will automatically clean up the payload
 }
 
 void Packet::setPayload(std::unique_ptr<Payload> p) {
-    // Transfer ownership directly
     this->payload = std::move(p);
 }
 

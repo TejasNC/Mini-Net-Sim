@@ -3,7 +3,6 @@
 #include <memory>
 #include <string>
 
-// Forward declarations
 class PacketTimeTracker;
 class Node;
 class Packet;

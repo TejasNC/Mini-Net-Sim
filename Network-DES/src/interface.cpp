@@ -1,6 +1,7 @@
 #include "../include/interface.hpp"
 #include "../include/event.hpp"
 #include "../include/link.hpp"
+#include "../include/logger.hpp"
 #include "../include/nodes/node.hpp"
 #include "../include/packets/packet-time-tracker.hpp"
 #include "../include/packets/packet.hpp"
@@ -8,8 +9,8 @@
 
 Interface::Interface(const std::string &id, std::shared_ptr<Node> node, std::shared_ptr<Link> link)
     : name(id), node(node), link(link) {
-    std::cerr << "Interface " << name << " created for node " << node->getID() << " and link " << link->getID()
-              << std::endl;
+    // std::cerr << "Interface " << name << " created for node " << node->getID() << " and link " << link->getID()
+    //           << std::endl;
 }
 
 Interface::~Interface() = default;
@@ -31,22 +32,23 @@ bool Interface::isConnected() const {
 void Interface::sendPacket(std::shared_ptr<Packet> packet, PacketTimeTracker *tracker) {
 
     if (!isConnected()) {
-        std::cerr << "Cannot send packet from " << name << ": Interface is not connected." << std::endl;
+        NetSim::Logger::log(NetSim::Logger::Level::ERROR, 0.0, NetSim::Logger::INTERFACE, name,
+                            "Cannot send packet: interface not connected to link");
         return;
     }
 
     auto linkPtr = link.lock(); // Safe to call since isConnected() already validated the link
 
-    std::cout << "Interface " << name << " sending packet " << packet->srcNodeId << "->" << packet->dstNodeId
-              << " through link " << linkPtr->getID() << std::endl;
+    double currentTime = tracker ? tracker->getCurrentTime() : 0.0;
+    NetSim::Logger::log(NetSim::Logger::Level::DEBUG, currentTime, NetSim::Logger::INTERFACE, name,
+                        "Transmitting packet [" + packet->getID() + "] via link [" + linkPtr->getID() + "]");
+
 
     // Get the other interface on the link
     auto otherInterface = linkPtr->getOtherInterface(shared_from_this()); // debug this
 
     if (tracker) {
         // Calculate transmission delay based on packet size and link bandwidth
-        // simulates packet fragmentation and transmission (somewhat simplified) => add delay for each fragment in
-        // future versions
         double transmissionDelay = tracker->computeTransmissionDelay(packet->sizeBytes(), linkPtr->getBandwidth());
 
         // Calculate propagation delay
@@ -55,7 +57,9 @@ void Interface::sendPacket(std::shared_ptr<Packet> packet, PacketTimeTracker *tr
         // Total delay
         double totalDelay = transmissionDelay + propagationDelay;
 
-        std::cout << "Scheduling packet transmission completion in " << totalDelay << "ms" << std::endl;
+        NetSim::Logger::log(NetSim::Logger::Level::DEBUG, currentTime, NetSim::Logger::LINK, linkPtr->getID(),
+                            "Delays: transmission=" + std::to_string(transmissionDelay) + "ms, propagation=" +
+                                std::to_string(propagationDelay) + "ms, total=" + std::to_string(totalDelay) + "ms");
 
         // update packet's transmission time
         tracker->currentTime += totalDelay;
@@ -67,25 +71,26 @@ void Interface::sendPacket(std::shared_ptr<Packet> packet, PacketTimeTracker *tr
 
     } else {
         // Fallback: immediate delivery (for backwards compatibility)
-        std::cout << "Warning: No packet time tracker provided. Delivering packet immediately."
-                  << std::endl; // for now, put this message in both streams
-        std::cerr << "Warning: No packet time tracker provided. Delivering packet immediately." << std::endl;
+        NetSim::Logger::log(NetSim::Logger::Level::WARNING, currentTime, NetSim::Logger::INTERFACE, name,
+                            "No time tracker provided - delivering packet immediately (unrealistic)");
         otherInterface->receivePacket(packet, nullptr);
     }
 
-    return;
 }
 
 void Interface::receivePacket(std::shared_ptr<Packet> packet, PacketTimeTracker *tracker) {
 
     if (!isConnected()) {
-        std::cerr << "Cannot receive packet at " << name << ": Interface is not connected." << std::endl;
+        NetSim::Logger::log(NetSim::Logger::Level::ERROR, 0.0, NetSim::Logger::INTERFACE, name,
+                            "Cannot receive packet: interface not connected");
         return;
     }
 
     auto nodePtr = node.lock();
 
-    std::cout << "Interface " << name << " received packet " << packet->getID() << std::endl;
+    double currentTime = tracker ? tracker->getCurrentTime() : 0.0;
+    NetSim::Logger::log(NetSim::Logger::Level::DEBUG, currentTime, NetSim::Logger::INTERFACE, name,
+                        "Packet [" + packet->getID() + "] received, delivering to node [" + nodePtr->getID() + "]");
 
     // Deliver packet to the node
     nodePtr->receive(packet, shared_from_this(), tracker);

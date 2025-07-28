@@ -10,8 +10,7 @@
 Event::Event(PacketTimeTracker *tracker) : tracker(tracker) {}
 
 bool Event::operator<(const Event &other) const {
-    // For min-heap: return true if this event should be processed AFTER other
-    // Since we want earlier events to have higher priority, we return true if this event's time is greater
+    // For min-heap: return true if this event should be processed after the other
     return tracker->getCurrentTime() > other.tracker->getCurrentTime();
 }
 
