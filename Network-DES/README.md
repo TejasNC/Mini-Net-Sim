@@ -78,15 +78,7 @@ Features demonstrated:
 - Detailed logging of all network operations
 
 ### Sample Output
-```
-[0.000] INFO : SIM(SIM)            Starting Network Discrete Event Simulator Demo
-[0.000] DEBUG: SIM(SIM)            Simulator instance created
-[0.000] INFO :                     Initializing network topology: HostA <-> Router1 <-> HostB
-[1.000] INFO : HOST(HostA)         Generating new packet for destination [HostB]
-[1.005] INFO : ROUTER(R1)          Forwarding packet to [HostB] via interface [IF_R1_B]
-[1.010] INFO : HOST(HostB)         Packet successfully delivered! Processing payload...
-[1.010] INFO : SIM(SIM)            Simulation completed successfully! Final time: 1.010004s
-```
+![alt text](./assets/image.png)
 
 ## Project Status
 
@@ -121,3 +113,9 @@ The main simulation is defined in `main.cpp`. To customize:
 - `ERROR`: Critical failures
 
 Example: `NetSim::Logger::setLevel(NetSim::Logger::Level::INFO);`
+
+## UML Diagram
+
+This is not the UML of the current design. I initially started the implementation with this UML in mind, but I have since changed some features and structure. However, the class hierarchy remains more or less the same.
+
+![alt text](./assets/UML.png)
